@@ -146,5 +146,5 @@ Sekitar pukul 13.00, tiba-tiba GNS3 saya (Hilmi) tidak bisa tersambung dengan Do
 
 <img src="https://user-images.githubusercontent.com/70790033/198060051-431c5ab1-2707-4459-827a-347ec8492801.png" width="800">
 
-Alhamdulillah, saya sudah mengekspor file dengan topologi, beserta konfigurasi dan scriptnya. Saya kemudian mengirim file tersebut ke grup LINE kelompok. Progress dilanjutkan oleh Nopal yang memulai project lagi from scratch. Oleh karena itu, terdapat dua file project di repository kelompok kami. 
+Alhamdulillah, saya sudah mengekspor file dengan topologi, beserta konfigurasi dan scriptnya. Saya kemudian mengirim file tersebut ke grup LINE kelompok. Progress dilanjutkan oleh Naufal Faadhilah yang memulai project lagi from scratch. Oleh karena itu, terdapat dua file project di repository kelompok kami. 
  
