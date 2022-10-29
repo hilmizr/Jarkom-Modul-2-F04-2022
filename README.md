@@ -293,7 +293,7 @@ allow-query{any;};
 
 ```bash
 zone "wise.f04.com" { type master; file "/etc/bind/wise/wise.f04.com"; 
-allow-transfer { 192.200.3.2; }; // Masukan IP Berlint 
+allow-transfer { 192.201.3.2; }; // Masukan IP Berlint 
 };
 
 service bind9 restart
@@ -326,31 +326,154 @@ service bind9 restart
 
 ### Konfigurasi Web Server 
 
+1. Untuk konfigurasi web server diperlukan instalasi update, apache, dan php
+
+```bash
+echo "nameserver 192.168.122.1" > /etc/resolv.conf
+apt-get update
+apt-get install apache2 -y
+service apache2 start
+apt-get install php -y
+apt-get install libapache2-mod-php7.0 -y
+service apache2 
+```
+
+2. setelah itu konfigurasi server dibuat sesuai berikut dengan ServerName adalah `wise.f04.com` dan ServerAliasnya adalah `www.wise.f04.com` File ini disimpan dalam folder `/etc/apache2/sites-available/wise.f04.com`.
+
+```bash
+echo "
+<VirtualHost *:80>
+
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/wise.f04.com
+        ServerName wise.f04.com
+        ServerAlias www.wise.f04.com
+
+        ErrorLog \${APACHE_LOG_DIR}/error.log
+        CustomLog \${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+" > /etc/apache2/sites-available/wise.f04.com.conf
+a2ensite wise.f04.com
+```
+
+3. Kemudian file requirement untuk wise dipindahkan ke `var/www/wise.f04.com`
+
+```bash
+mkdir /var/www/wise.f04.com
+```
+
+4. Setelah itu konfigurasi web server yang sudah dibuat di-enable dengan command `a2ensite wise.f04.com` dn
+
+5. Restart apache2 restart `service apache2 restart`
 
 ## Soal 9
 
 ### Url www.wise.yyy.com/index.php/home menjadi www.wise.yyy.com/home
 
+1. Ketika mengganti URL `www.wise.yyy.com/index.php/home` menjadi `www.wise.yyy.com/home`, modul RewriteRule digunakan pada file `/var/www/wise.f04.com/.htaccess` untuk dapat mengakses file .php.
+2. Tambahkan directory `/var/www/wise.f04.com` pada file `/etc/apache2/sites-available/wise.f04.com.conf`
+3. Restart apache2 dan url .php seharusnya sudah terubah.
+4. Perhatikan kode berikut
+
+```bash
+...
+echo "
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www/wise.f04.com
+        ServerName wise.f04.com
+        ServerAlias www.wise.f04.com
+
+        ErrorLog \${APACHE_LOG_DIR}/error.log
+        CustomLog \${APACHE_LOG_DIR}/access.log combined
+
+        <Directory /var/www/wise.f04.com>
+                Options +FollowSymLinks -Multiviews
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+" > /etc/apache2/sites-available/wise.f04.com.conf
+service apache2 restart
+```
 
 ## Soal 10
 
 ### Penyimpanan aset yang memiliki DocumentRoot pada /var/www/eden.wise.yyy.com
 
+1. Tambahkan konfigurasi untuk alamat `eden.wise.f04.com` dengan serverAlias `www.eden.wise.f04.com` pada file `/etc/apache2/sites-available/eden.wise.f04.com.conf`
+
+```bash
+ServerAdmin webmaster@localhost
+DocumentRoot /var/www/eden.wise.f04.com
+ServerName eden.wise.f04.com
+ServerAlias www.eden.wise.f04.com
+```
+
+2. Gunakan `a2ensite eden.wise.f04.com` untuk mengaktifkan konfigurasi yang terlah dibuat
+
+3. Restart apache2 dan konfigurasi web server sudah siap digunakan dengan `service apache2 restart`
 
 ## Soal 11
 
 ### folder /public hanya dapat melakukan directory listing saja
 
+1. Tambahkan directory `/var/www/eden.wise.f04.com/public` tanpa opsi `AllowOverride All` dan hanya dengan opsi `Options +Indexes` pada file `/etc/apache2/sites-available/eden.wise.f04.com.conf`
+```bash
+<VirtualHost *:80>
+...
+
+        <Directory /var/www/eden.wise.f04.com/public>
+                Options +Indexes
+        </Directory>
+...
+        <Directory /var/www/wise.f04.com>
+                Options +FollowSymLinks -Multiviews
+                AllowOverride All
+        </Directory>
+</VirtualHost>
+" > /etc/apache2/sites-available/eden.wise.f04.com.conf
+```
+
+2. Restart apache2 dan konfigurasi web server sudah siap digunakan. `service apache2 restart`
 
 ## Soal 12
 
 ### Error 404.html pada folder /error
 
+1. Tambahkan konfigurasi ErrorDocument dan diganti dengan halaman `/error/404.html` pada file `/etc/apache2/sites-available/eden.wise.f04.com.conf`
+
+```bash
+echo "
+<VirtualHost *:80>
+...
+        ErrorDocument 404 /error/404.html
+        ErrorDocument 500 /error/404.html
+        ErrorDocument 502 /error/404.html
+        ErrorDocument 503 /error/404.html
+        ErrorDocument 504 /error/404.html
+...
+</VirtualHost>
+" > /etc/apache2/sites-available/eden.wise.f04.com.conf
+```
+2. Restart apache2. `service apache2 restart`
 
 ## Soal 13
 
 ### Konfigurasi virtual host
 
+1. Tambahkan konfigurasi Alias `/js` untuk mempersingkat url `/var/www/eden.wise.f04.com/public/js` pada file `/etc/apache2/sites-available/eden.wise.f04.com.conf`
+```bash
+echo "
+<VirtualHost *:80>
+...
+
+        Alias \"/js\" \"/var/www/eden.wise.f04.com/public/js\"
+...
+</VirtualHost>
+" > /etc/apache2/sites-available/eden.wise.f04.com.conf
+```
+
+2. Restart apache 2. `service apache2 restart`
 
 ## Soal 14
 
@@ -379,4 +502,9 @@ Sekitar pukul 13.00, tiba-tiba GNS3 saya (Hilmi) tidak bisa tersambung dengan Do
 <img src="https://user-images.githubusercontent.com/70790033/198060051-431c5ab1-2707-4459-827a-347ec8492801.png" width="800">
 
 Alhamdulillah, saya sudah mengekspor file dengan topologi, beserta konfigurasi dan scriptnya. Saya kemudian mengirim file tersebut ke grup LINE kelompok. Progress dilanjutkan oleh Naufal Faadhilah yang memulai project lagi from scratch. Oleh karena itu, terdapat dua file project di repository kelompok kami. 
+
+## Ketidak-compatible perangkat laptop saat menginstall virtualbox
+
+Teman saya Ida Bagus Kade Rainata Putra tidak mampu mengunduh virtualbox dan sejenisnya di perangkat kerasnya. Hal ini tentunya menghambat pengerjaan praktikum ini.
+Adapun perangkatnya ialah: Mackbook M1
  
