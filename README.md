@@ -124,7 +124,9 @@ Agar membuat lebih efisien, command di atas, beserta ```ping google.com```, juga
 <img src="https://user-images.githubusercontent.com/70790033/198057154-065a2ae8-d058-4030-854d-98cc015fbef7.png" width="800">
 
 ## Soal 2
-### Instalasi Bind
+
+#### Instalasi Bind
+
 Instalasi Bind dilakukan di WISE dengan command
 ```bash
  apt-get update
@@ -139,6 +141,236 @@ Instalasi Bind dilakukan di WISE dengan command
   <img src="https://user-images.githubusercontent.com/70790033/198059117-f94d3dd8-7c4c-44f7-89bf-fac46021f2bd.png" width="800">
   
   <img src="https://user-images.githubusercontent.com/70790033/198059321-15ba55bf-6c5c-4edd-806f-368f44d51a7f.png" width="800">
+  
+## Soal 3
+
+### Subdomain eden.wise.yyy.com dengan alias www.eden.wise.yyy.com yang diatur DNS-nya di WISE dan mengarah ke Eden
+
+1. Edit file /etc/bind/wise/wise.f04.com pada WISE
+2. Tambahkan subdomain untuk eden.wise.f04.com yang mengarah ke IP Eden
+
+```bash
+nano /etc/bind/wise/wise.f04.com
+```
+
+3. Tambahkan konfigurasi berikut
+
+```bash
+eden   IN      A       192.201.2.3
+www.eden IN    CNAME   eden.wise.f04.com.
+```
+
+4. Restart service bind
+
+```bash
+service bin9 restart
+```
+
+5. Ping ke subdomain dengan perintah berikut (dari client)
+
+```bash
+ping eden.wise.f04.com -c 5
+
+ATAU
+
+host -t A eden.wise.f04.com
+```
+
+## Soal 4
+
+### Reverse Domain untuk Domain Utama
+
+1. Edit file /etc/bind/named.conf.local pada WISE
+
+```bash
+nano /etc/bind/named.conf.local
+```
+
+2. Tambahkan konfigurasi berikut ke named.conf.local, lalu tambahkan reverse dari 3 byte awal IP yang ingin di-reverse. Karena IPnya adalah 192.201.2, reversenya adalah 2.201.192
+
+```bash
+zone "2.201.192.in-addr.arpa" {
+    type master;
+    file "/etc/bind/wise/2.201.192.in-addr.arpa";
+};
+```
+
+3. Copykan file db.local ke /etc/bind ke dalam folder wise yang baru dibuat dan ubah namanya menjadi 2.201.192.in-addr.arpa, lalu restart bind9
+
+```bash
+cp /etc/bind/db.local /etc/bind/wise/2.201.192.in-addr.arpa
+
+service bind9 restart
+```
+
+4. Memastikan konfigurasi sudah benar dengan perintah (pada client)
+
+```bash
+apt-get update
+apt-get install dnsutils
+```
+
+5. Kembalikan namserver di /etc/resolv.conf dengan IP WISE lalu cek dengan command
+
+```bash
+host -t PTR 192.201.2.2
+```
+
+## Soal 5
+
+### Berlint Sebagai DNS Slave Untuk Domain Utama
+
+1. Konfigurasi pada server WISE dengan meng-edit file /etc/bind/named.conf.local. Sesuaikan dengan syntax berikut
+
+```bash
+zone "wise.f04.com" {
+    type master;
+    notify yes;
+    also-notify { 192.201.3.2; }; // IP Berlint 
+    allow-transfer { 192.201.3.2; }; // IP Berlint 
+    file "/etc/bind/wise/wise.f04.com";
+};
+```
+
+2. Restart bind9
+
+```bash
+service bind9 restart
+```
+
+3. Masuk ke tahap konfigurasi server Berlint. Buka berlint lalu update package lists dan install aplikasi bind9 dengan menjalankan command
+
+```bash
+apt-get update
+apt-get install bind9 -y
+```
+
+4. Buka file /etc/bind/named.conf.local pada Berlint dan tambahkan syntax berikut dan restart bind9
+
+```bash
+zone "wise.f04.com" {
+    type slave;
+    masters { 192.201.2.2; }; // Masukan IP WISE
+    file "/var/lib/bind/wise.f04.com";
+};
+
+service bind9 restart
+```
+
+5. Testing ser WISE dengan mematikan service bind9
+
+```bash
+service bind9 stop
+```
+Pada client pastikan pengaturan nameserver mengarah ke IP WISE dan IP Berlint.
+Lakukan ping ke wise.f04.com pada client. Jika ping berhasil maka konfigurasi DNS slave telah berhasil
+
+## Soal 6
+### Subdomain Khusus Untuk Operation operation.wise.yyy.com 
+
+1. 
+
+```bash
+nano /etc/bind/wise/wise.f04.com
+Kemudian edit file /etc/bind/named.conf.options pada WISE.
+nano /etc/bind/named.conf.options
+```
+
+2. Edit file /etc/bind/named.conf.options pada WISE
+
+```bash
+nano /etc/bind/named.conf.options
+```
+
+3. Comment dnssec-validation auto dan tambahkan baris berikut pada /etc/bind/named.conf.options
+
+```bash
+allow-query{any;};
+```
+
+4. Edit file /etc/bind/named.conf.local menjadi seperti gambar di bawah dan restart bind9
+
+
+```bash
+zone "wise.f04.com" { type master; file "/etc/bind/wise/wise.f04.com"; 
+allow-transfer { 192.200.3.2; }; // Masukan IP Berlint 
+};
+
+service bind9 restart
+```
+
+## Soal 7
+
+### Subdomain melalui Berlint dengan akses strix.operation.wise.yyy.com yang mengarah ke Eden
+
+1. Instalasi bind
+
+```bash
+apt-get update
+apt-get install bind9 -y
+```
+
+2. Edit folder operation.wise.f04.com
+
+```bash
+nano /etc/bind/operation/operation.wise.f04.com
+```
+
+3. Restart bind 9 dan ping ke domain strix.operation.wise.f04.com
+
+```bash
+service bind9 restart
+```
+
+## Soal 8
+
+### Konfigurasi Web Server 
+
+
+## Soal 9
+
+### Url www.wise.yyy.com/index.php/home menjadi www.wise.yyy.com/home
+
+
+## Soal 10
+
+### Penyimpanan aset yang memiliki DocumentRoot pada /var/www/eden.wise.yyy.com
+
+
+## Soal 11
+
+### folder /public hanya dapat melakukan directory listing saja
+
+
+## Soal 12
+
+### Error 404.html pada folder /error
+
+
+## Soal 13
+
+### Konfigurasi virtual host
+
+
+## Soal 14
+
+### www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500
+
+
+## Soal 15
+
+### Autentikasi username Twilight dan password opStrix dan file di /var/www/strix.operation.wise.yyy 
+
+
+## Soal 16 
+
+### Akses otomatis ke www.wise.yyy.com (akses IP Eden)
+
+
+## Soal 17
+
+### Mengubah request gambar yang memiliki substring “eden” akan diarahkan menuju eden.pn
+
 
 # Kendala
 ## Insiden Docker
