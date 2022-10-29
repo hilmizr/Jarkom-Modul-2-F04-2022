@@ -437,9 +437,9 @@ Lakukan ping ke wise.f04.com pada client. Jika ping berhasil maka konfigurasi DN
 
 3. Restart apache2 dan konfigurasi web server sudah siap digunakan dengan `service apache2 restart`
 
-## Soal 11
+### Soal 11
 
-### folder /public hanya dapat melakukan directory listing saja
+#### folder /public hanya dapat melakukan directory listing saja
 
 1. Tambahkan directory `/var/www/eden.wise.f04.com/public` tanpa opsi `AllowOverride All` dan hanya dengan opsi `Options +Indexes` pada file `/etc/apache2/sites-available/eden.wise.f04.com.conf`
 
@@ -502,9 +502,9 @@ Lakukan ping ke wise.f04.com pada client. Jika ping berhasil maka konfigurasi DN
 
 2. Restart apache 2. `service apache2 restart`
 
-## Soal 14
+### Soal 14
 
-### www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500
+#### www.strix.operation.wise.yyy.com hanya bisa diakses dengan port 15000 dan port 15500
 
 ### Soal 15
 
