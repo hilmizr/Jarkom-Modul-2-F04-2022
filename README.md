@@ -3,8 +3,15 @@
 ## Anggota
 
 - Hilmi Zharfan Rachmadi - 5025201268
-- Ida Bagus Kade Rainata Putra Wibawa - 5025201235 (Membantu revisi dan mengerjakan lapres)
+- Ida Bagus Kade Rainata Putra Wibawa - 5025201235
 - Naufal Faadhilah - 5025201221
+
+## Pembagian Tugas
+- Hilmi Zharfan Rachmadi
+  - Topologi & Konfigurasi
+  - Nomor 1-5
+- Ida Bagus Kade Rainata Putra Wibawa& Naufal Faadhilah
+  - Revisi & Lapres
 
 ## Jawaban
 
