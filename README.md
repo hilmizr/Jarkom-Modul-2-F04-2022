@@ -3,7 +3,7 @@
 ## Anggota
 
 - Hilmi Zharfan Rachmadi - 5025201268
-- Ida Bagus Kade Rainata Putra Wibawa - 5025201235
+- Ida Bagus Kade Rainata Putra Wibawa - 5025201235 (Membantu revisi dan mengerjakan lapres)
 - Naufal Faadhilah - 5025201221
 
 ## Jawaban
