@@ -10,7 +10,7 @@
 - Hilmi Zharfan Rachmadi
   - Topologi & Konfigurasi
   - Nomor 1-5
-- Ida Bagus Kade Rainata Putra Wibawa& Naufal Faadhilah
+- Ida Bagus Kade Rainata Putra Wibawa & Naufal Faadhilah
   - Revisi & Lapres
 
 ## Jawaban
